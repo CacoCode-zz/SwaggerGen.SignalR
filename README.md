@@ -8,7 +8,7 @@ Install-Package SwaggerGen.SignalR -Version
 ```
 
 ## Use
-引入Nuget包，在自己的Hub文件上标注专属特性 **[SignalRHub]**，特性需要传一个Path参数，来标明Hub路由
+Introduce the nuget package to label the exclusive features on your own hub file [SignalRHub], attribute needs to pass a "Path" parameter to indicate the hub routing 
 
 ```cshrap
     [SignalRHub("chatHub")]
@@ -30,3 +30,78 @@ Install-Package SwaggerGen.SignalR -Version
         }
     }
 ```
+Integrate the swagger ui as usual 
+```cshrap
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllers();
+            services.AddSignalR();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SignalRSample", Version = "v1" });
+            });
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SignalRSample"));
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
+```
+Integrated signalr swagger ui 
+```cshrap
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllers();
+            services.AddSignalR();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SignalRSample", Version = "v1" });
+                c.SwaggerSignalR(); // This is the modification item
+            });
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SignalRSample"));
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<ChatHub>($"/{typeof(ChatHub).GetCustomAttribute<SignalRHubAttribute>().Path}"); // This is the modification item
+                endpoints.MapControllers();
+            });
+        }
+```
+
+## Run
+![image](https://user-images.githubusercontent.com/12271319/123726168-12775e80-d8c2-11eb-9447-dc3ebe02f795.png)
