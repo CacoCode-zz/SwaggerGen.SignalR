@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <Authors>Caco</Authors>
   </PropertyGroup>
 
   <ItemGroup>

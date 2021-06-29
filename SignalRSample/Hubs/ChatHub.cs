@@ -12,14 +12,8 @@ namespace SignalRSample.Hubs
     [SignalRHub("chatHub")]
     public class ChatHub : Hub
     {
-        /// <summary>
-        /// 客户端调用方法
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
         public Task SendMessage(ChatMessageInfo data)
         {
-            //服务端返回是调用方法
             return Clients.All.SendAsync("ReceiveMessage", data);
         }
 
