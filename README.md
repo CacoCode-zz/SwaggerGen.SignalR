@@ -104,4 +104,4 @@ Integrated signalr swagger ui
 ```
 
 ## Run
-![image](https://user-images.githubusercontent.com/12271319/123726168-12775e80-d8c2-11eb-9447-dc3ebe02f795.png)
+![演示图片](docs/run.png)
